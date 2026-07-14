@@ -13,6 +13,14 @@ Each module contains:
 > The exercises, tests and notes in this repo are written by me — they are not the course
 > material, which remains the property of its authors.
 
+## You are on the `starter` branch
+
+This branch holds the exercises **unsolved**: every `exercises.js` ships failing stubs, and
+the whole suite is red on purpose. That is the starting line.
+
+My own completed solutions live on [`main`](../../tree/main) — worth a look only after you
+have written your own, or you will spend the afternoon reading instead of thinking.
+
 ## Usage
 
 ```bash
