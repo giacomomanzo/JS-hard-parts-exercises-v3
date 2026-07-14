@@ -2,7 +2,7 @@
 //
 // Read NOTES.md first, then replace every TODO. Run: npm run test:06
 
-export const TODO = Symbol('TODO — replace me');
+export const TODO = Symbol("TODO — replace me");
 
 /* -------------------------------------------------------------------------- */
 /* Exercise 1 — The factory, done by hand                                      */
@@ -24,7 +24,11 @@ export const userMethods = {
 };
 
 export function createUser(name, score = 0) {
-  return TODO;
+  const user = Object.create(userMethods);
+  user.name = name;
+  user.score = score;
+
+  return user;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -41,7 +45,10 @@ export function createUser(name, score = 0) {
 /* -------------------------------------------------------------------------- */
 
 export function myNew(Constructor, ...args) {
-  return TODO;
+  const obj = Object.create(Constructor.prototype);
+  const result = Constructor.apply(obj, args);
+
+  return result instanceof Object ? result : obj;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -54,7 +61,9 @@ export function myNew(Constructor, ...args) {
 /* -------------------------------------------------------------------------- */
 
 export function myBind(fn, thisArg, ...boundArgs) {
-  return TODO;
+  return function (...args) {
+    return fn.apply(thisArg, [...boundArgs, ...args]);
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -69,11 +78,28 @@ export function myBind(fn, thisArg, ...boundArgs) {
 /* -------------------------------------------------------------------------- */
 
 export class Animal {
-  // TODO
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return `${this.name} makes a sound`;
+  }
 }
 
-export class Dog {
-  // TODO — extends Animal
+export class Dog extends Animal {
+  constructor(name, breed) {
+    super(name);
+    this.breed = breed;
+  }
+
+  speak() {
+    return `${this.name} barks`;
+  }
+
+  fetch() {
+    return `${this.name} fetches the ball`;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -101,10 +127,10 @@ export class Timer {
   }
 
   startWithArrow() {
-    // TODO
+    setTimeout(() => this.tick(), 0);
   }
 
   startWithBind() {
-    // TODO
+    setTimeout(this.tick.bind(this), 0);
   }
 }
