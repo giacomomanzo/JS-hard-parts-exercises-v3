@@ -54,9 +54,9 @@ export function snippetC() {
 
 // Fill in what each snippet returns. Arrays of strings.
 export const predictions = {
-  snippetA: TODO, // e.g. ['function', 'object']
-  snippetB: TODO,
-  snippetC: TODO,
+  snippetA: ["function", "undefined"], // e.g. ['function', 'object']
+  snippetB: ["ReferenceError"],
+  snippetC: ["global start", "outer start", "inner", "outer end", "global end"],
 };
 
 /* -------------------------------------------------------------------------- */
@@ -68,7 +68,9 @@ export const predictions = {
 /* -------------------------------------------------------------------------- */
 
 export function sumTo(n) {
-  return TODO;
+  if (n <= 0) return 0;
+
+  return n + sumTo(n - 1);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -80,7 +82,14 @@ export function sumTo(n) {
 /* -------------------------------------------------------------------------- */
 
 export function countStackDepth() {
-  return TODO;
+  try {
+    return 1 + countStackDepth();
+  } catch (err) {
+
+    if (err instanceof RangeError) return 0;
+
+    throw err;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -95,5 +104,15 @@ export function countStackDepth() {
 /* -------------------------------------------------------------------------- */
 
 export function withTrace(fn, name, log) {
-  return TODO;
+
+  function traceFunction(...args) {
+    log.push(`enter ${name}`);
+    try {
+      return fn.apply(this, args);
+    } finally {
+      log.push(`exit ${name}`);
+    }
+  };
+
+  return traceFunction;
 }
