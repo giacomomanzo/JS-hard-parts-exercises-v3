@@ -5,7 +5,7 @@
 // Rule for this module: no state outside the functions. No module-level variables,
 // no properties hung off the returned function. Everything lives in a backpack.
 
-export const TODO = Symbol('TODO — replace me');
+export const TODO = Symbol("TODO — replace me");
 
 /* -------------------------------------------------------------------------- */
 /* Exercise 1 — createCounter                                                  */
@@ -15,7 +15,13 @@ export const TODO = Symbol('TODO — replace me');
 /* -------------------------------------------------------------------------- */
 
 export function createCounter() {
-  return TODO;
+  let count = 0;
+
+  function counter() {
+    return ++count;
+  }
+
+  return counter;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -26,7 +32,17 @@ export function createCounter() {
 /* -------------------------------------------------------------------------- */
 
 export function once(fn) {
-  return TODO;
+  let hasRun = false;
+  let result;
+
+  return function (...args) {
+    if (!hasRun) {
+      result = fn.apply(this, args);
+      hasRun = true;
+    }
+
+    return result;
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -38,7 +54,15 @@ export function once(fn) {
 /* -------------------------------------------------------------------------- */
 
 export function memoize(fn) {
-  return TODO;
+  const cache = new Map();
+
+  return function (arg) {
+    if (!cache.has(arg)) {
+      cache.set(arg, fn(arg));
+    }
+
+    return cache.get(arg);
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -50,7 +74,15 @@ export function memoize(fn) {
 /* -------------------------------------------------------------------------- */
 
 export function createSecretHolder(initialSecret) {
-  return TODO;
+  function getSecret() {
+    return initialSecret;
+  }
+
+  function setSecret(value) {
+    initialSecret = value;
+  }
+
+  return { getSecret, setSecret };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -63,7 +95,13 @@ export function createSecretHolder(initialSecret) {
 /* -------------------------------------------------------------------------- */
 
 export function createRotator(array) {
-  return TODO;
+  let index = 0;
+
+  return function () {
+    const value = array[index];
+    index = (index + 1) % array.length;
+    return value;
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -78,5 +116,23 @@ export function createRotator(array) {
 /* -------------------------------------------------------------------------- */
 
 export function createBankAccount(initialBalance = 0) {
-  return TODO;
+  function deposit(amount) {
+    initialBalance += amount;
+    return initialBalance;
+  }
+
+  function withdraw(amount) {
+    if (initialBalance - amount < 0) {
+      return "Insufficient funds";
+    }
+
+    initialBalance -= amount;
+    return initialBalance;
+  }
+
+  function getBalance() {
+    return initialBalance;
+  }
+
+  return { deposit, withdraw, getBalance };
 }
