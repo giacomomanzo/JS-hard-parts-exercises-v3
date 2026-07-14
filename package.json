@@ -1,0 +1,22 @@
+{
+  "name": "js-hard-parts-exercises",
+  "version": "1.0.0",
+  "description": "Esercizi di JavaScript sui temi del corso JavaScript: The Hard Parts (Frontend Masters)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "dev": "vitest",
+    "test:01": "vitest run src/01-js-principles",
+    "test:02": "vitest run src/02-callbacks-higher-order",
+    "test:03": "vitest run src/03-closure",
+    "test:04": "vitest run src/04-async-event-loop",
+    "test:05": "vitest run src/05-promises",
+    "test:06": "vitest run src/06-classes-prototypes"
+  },
+  "keywords": ["javascript", "closure", "event-loop", "promises", "prototypes", "exercises"],
+  "license": "MIT",
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}
