@@ -57,10 +57,23 @@ describe('exercise 3 — allOf', () => {
     expect(results).toEqual(['slow', 'fast', 'now']);
   });
 
-  it('runs them concurrently, not one after the other', async () => {
-    const start = Date.now();
-    await allOf([wait(40, 'a'), wait(40, 'b'), wait(40, 'c')]);
-    expect(Date.now() - start).toBeLessThan(100); // ~40ms, not ~120ms
+  it('stays pending until the very last promise has settled', async () => {
+    vi.useFakeTimers();
+    try {
+      let settled = false;
+      const results = allOf([wait(10, 'a'), wait(40, 'b')]);
+      results.then(() => {
+        settled = true;
+      });
+
+      await vi.advanceTimersByTimeAsync(20); // 'a' is in, 'b' is not
+      expect(settled).toBe(false);
+
+      await vi.advanceTimersByTimeAsync(20);
+      await expect(results).resolves.toEqual(['a', 'b']);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('rejects as soon as one of them rejects', async () => {

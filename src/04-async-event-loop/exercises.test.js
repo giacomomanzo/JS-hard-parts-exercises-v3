@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   debounce,
   delay,
@@ -72,7 +72,13 @@ describe('exercise 3 — runInSeries', () => {
   });
 });
 
+// Here the timer is an implementation detail, not the thing under study, so we
+// drive it by hand. (The prediction snippets above stay on real timers: there
+// the runtime's own behaviour IS the thing under study.)
 describe('exercise 4 — debounce', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
   it('runs once, after the calls stop', async () => {
     const fn = vi.fn();
     const debounced = debounce(fn, 20);
@@ -83,7 +89,7 @@ describe('exercise 4 — debounce', () => {
 
     expect(fn).not.toHaveBeenCalled();
 
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await vi.advanceTimersByTimeAsync(20);
     expect(fn).toHaveBeenCalledTimes(1);
   });
 
@@ -94,7 +100,7 @@ describe('exercise 4 — debounce', () => {
     debounced('first');
     debounced('last');
 
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await vi.advanceTimersByTimeAsync(20);
     expect(fn).toHaveBeenCalledWith('last');
   });
 
@@ -103,13 +109,13 @@ describe('exercise 4 — debounce', () => {
     const debounced = debounce(fn, 30);
 
     debounced();
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await vi.advanceTimersByTimeAsync(20);
     debounced(); // resets: the first one must never fire
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await vi.advanceTimersByTimeAsync(20);
 
     expect(fn).not.toHaveBeenCalled();
 
-    await new Promise((resolve) => setTimeout(resolve, 30));
+    await vi.advanceTimersByTimeAsync(10);
     expect(fn).toHaveBeenCalledTimes(1);
   });
 });

@@ -97,7 +97,10 @@ export class Timer {
   }
 
   startBroken() {
-    setTimeout(this.tick, 0); // `this` is undefined by the time it runs
+    // `tick` is handed over as a bare function: when the runtime finally calls
+    // it, there is no `timer` to the left of the dot. Whatever `this` ends up
+    // being (the host decides), it is not the Timer instance.
+    setTimeout(this.tick, 0);
   }
 
   startWithArrow() {
