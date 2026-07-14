@@ -5,7 +5,7 @@
 // Rule for this module: build the behaviour yourself. `Promise.all`, `Promise.race`
 // and `util.promisify` are what you are re-implementing, so don't call them.
 
-export const TODO = Symbol('TODO — replace me');
+export const TODO = Symbol("TODO — replace me");
 
 /* -------------------------------------------------------------------------- */
 /* Exercise 1 — wait                                                           */
@@ -15,7 +15,7 @@ export const TODO = Symbol('TODO — replace me');
 /* -------------------------------------------------------------------------- */
 
 export function wait(ms, value) {
-  return TODO;
+  return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -27,7 +27,17 @@ export function wait(ms, value) {
 /* -------------------------------------------------------------------------- */
 
 export function promisify(fn) {
-  return TODO;
+  return function (...args) {
+    return new Promise((resolve, reject) => {
+      fn.call(this, ...args, (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -41,7 +51,30 @@ export function promisify(fn) {
 /* -------------------------------------------------------------------------- */
 
 export function allOf(promises) {
-  return TODO;
+  return new Promise((resolve, reject) => {
+    if (promises.length === 0) {
+      resolve([]);
+      return;
+    }
+
+    const results = new Array(promises.length);
+    let completed = 0;
+
+    promises.forEach((promise, index) => {
+      Promise.resolve(promise).then(
+        (result) => {
+          results[index] = result;
+          completed++;
+          if (completed === promises.length) {
+            resolve(results);
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+      );
+    });
+  });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -54,7 +87,21 @@ export function allOf(promises) {
 /* -------------------------------------------------------------------------- */
 
 export function withTimeout(promise, ms) {
-  return TODO;
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error("Timed out"));
+    }, ms);
+    Promise.resolve(promise).then(
+      (result) => {
+        clearTimeout(timeoutId);
+        resolve(result);
+      },
+      (error) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      },
+    );
+  });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -66,7 +113,15 @@ export function withTimeout(promise, ms) {
 /* -------------------------------------------------------------------------- */
 
 export async function retry(makePromise, attempts) {
-  return TODO;
+  let lastError;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await makePromise();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -79,5 +134,9 @@ export async function retry(makePromise, attempts) {
 /* -------------------------------------------------------------------------- */
 
 export async function mapSeries(items, asyncFn) {
-  return TODO;
+  const results = [];
+  for (const item of items) {
+    results.push(await asyncFn(item));
+  }
+  return results;
 }
