@@ -1,46 +1,70 @@
 # JavaScript: The Hard Parts — Exercises
 
-Original exercises on the "hard parts" of JavaScript: the call stack, higher order functions,
-closure, the event loop, promises and the prototype chain.
+[![Tests](https://github.com/giacomomanzo/JS-hard-parts-exercises-v3/actions/workflows/tests.yml/badge.svg)](https://github.com/giacomomanzo/JS-hard-parts-exercises-v3/actions/workflows/tests.yml)
 
-Each module contains:
+This repository documents my study of JavaScript's execution model.
 
-- **`NOTES.md`** — my notes on the concept, written by hand while studying.
-- **`exercises.js`** — the functions to implement (they ship as failing stubs).
-- **`exercises.test.js`** — the tests, already written. The goal is to make them all pass.
+Rather than reproducing the exercises of a course, I wrote **original problems and
+tests** to check whether I had actually understood execution contexts, closures,
+asynchronicity, promises and the prototype chain — on the principle that you only
+know a mechanism once you can rebuild it. So the repo contains, among other things,
+a hand-rolled `Promise.all`, a `new` implemented as a plain function, and a
+sequential task runner written twice: once in callback style, once with promises.
 
-> Inspired by the topics of _JavaScript: The Hard Parts v3_ by Will Sentance (Frontend Masters).
-> The exercises, tests and notes in this repo are written by me — they are not the course
-> material, which remains the property of its authors.
+> The topics follow _JavaScript: The Hard Parts v3_ by Will Sentance (Frontend Masters).
+> The exercises, tests and notes here are mine — they are not the course material,
+> which remains the property of its authors.
 
-## Usage
+## Two branches
+
+| Branch | What's in it |
+| --- | --- |
+| **`main`** (here) | my completed solutions |
+| **[`starter`](../../tree/starter)** | the same exercises, unsolved — the failing stubs |
+
+Want to work through them yourself? Start from [`starter`](../../tree/starter): the
+tests are already written there, and the job is to turn them green.
 
 ```bash
-npm install       # once
-npm run dev       # watch mode: implement, save, watch it go green
-npm test          # run every test once
-npm run test:03   # run a single module (closure)
+git clone --branch starter https://github.com/giacomomanzo/JS-hard-parts-exercises-v3.git
+npm install
+npm run dev     # watch mode: implement, save, watch it go green
 ```
 
-Open a module, read `NOTES.md`, then fill in the stubs in `exercises.js` until the tests are
-green. **Don't edit the test files**: if a test fails, the bug is in the implementation (or in
-your mental model of the concept, which is exactly the point).
+## The modules
 
-## Modules
+| # | Topic | What I built |
+| --- | --- | --- |
+| 01 | [JavaScript principles](src/01-js-principles/) | hoisting/TDZ predictions, recursive `sumTo`, `countStackDepth`, `withTrace` |
+| 02 | [Callbacks & higher order functions](src/02-callbacks-higher-order/) | `mapWith`, `reduceWith`, `filterWith`, `pipe`, `repeat`, `groupBy` |
+| 03 | [Closure](src/03-closure/) | `createCounter`, `once`, `memoize`, `createSecretHolder`, `createRotator`, `createBankAccount` |
+| 04 | [Async & the event loop](src/04-async-event-loop/) | event-loop order predictions, `delay`, `runInSeries`, `debounce` |
+| 05 | [Promises](src/05-promises/) | `wait`, `promisify`, `allOf` (my own `Promise.all`), `withTimeout`, `retry`, `mapSeries` |
+| 06 | [Classes & prototypes](src/06-classes-prototypes/) | `Object.create` factory, `myNew`, `myBind`, `Animal`/`Dog`, the lost `this` |
 
-| #   | Module                                                               | Concepts                                                       |
-| --- | -------------------------------------------------------------------- | -------------------------------------------------------------- |
-| 01  | [JS principles](src/01-js-principles/)                               | thread of execution, execution context, call stack, hoisting   |
-| 02  | [Callbacks & higher order functions](src/02-callbacks-higher-order/) | functions as values, callbacks, composition                    |
-| 03  | [Closure](src/03-closure/)                                           | scope chain, the "backpack", persistent state                  |
-| 04  | [Async & the event loop](src/04-async-event-loop/)                   | Web APIs, callback queue, microtask queue, event loop          |
-| 05  | [Promises](src/05-promises/)                                         | then/catch, microtasks, `Promise.all`, async/await             |
-| 06  | [Classes & prototypes](src/06-classes-prototypes/)                   | `Object.create`, prototype chain, `this`, `new`, `class`       |
+Every module carries a `NOTES.md` with the theory, an `exercises.js` and an
+`exercises.test.js`. 88 tests, all green.
 
-## Suggested order
+## The bit I found most useful
 
-The modules build on each other. Modules 04 and 05 in particular make little sense before
-you are comfortable with callbacks (02) and closure (03).
+Two modules don't ask for an implementation at all: they ask for a **prediction**.
+You are given a snippet — hoisting, the temporal dead zone, the order of
+synchronous code against microtasks against macrotasks — and you have to write down
+what you think it prints, in an object the test then compares against what the
+snippet really does at runtime.
+
+There is no cheating your way through it: either your model of the event loop is
+right, or the test is red. It is where I learned that `setTimeout(fn, 0)` doesn't
+mean "run now" — it means "not before the call stack is empty", which in the
+presence of a 50ms blocking loop is a very different promise.
+
+## Running the tests
+
+```bash
+npm test          # everything, once
+npm run dev       # watch mode
+npm run test:03   # a single module
+```
 
 ## License
 
