@@ -2,7 +2,7 @@
 //
 // Read NOTES.md first, then replace every TODO. Run: npm run test:04
 
-export const TODO = Symbol('TODO — replace me');
+export const TODO = Symbol("TODO — replace me");
 
 /* -------------------------------------------------------------------------- */
 /* Exercise 1 — Predict the order                                              */
@@ -15,44 +15,44 @@ export const TODO = Symbol('TODO — replace me');
 // Snippet A — sync, macrotask, microtask
 export function snippetA() {
   const log = [];
-  log.push('start');
-  setTimeout(() => log.push('timeout'), 0);
-  Promise.resolve().then(() => log.push('promise'));
-  log.push('end');
+  log.push("start");
+  setTimeout(() => log.push("timeout"), 0);
+  Promise.resolve().then(() => log.push("promise"));
+  log.push("end");
   return new Promise((resolve) => setTimeout(() => resolve(log), 10));
 }
 
 // Snippet B — a microtask that queues another microtask, and a 0ms timer
 export function snippetB() {
   const log = [];
-  setTimeout(() => log.push('timeout'), 0);
+  setTimeout(() => log.push("timeout"), 0);
   Promise.resolve()
     .then(() => {
-      log.push('then 1');
+      log.push("then 1");
       return Promise.resolve();
     })
-    .then(() => log.push('then 2'));
-  log.push('sync');
+    .then(() => log.push("then 2"));
+  log.push("sync");
   return new Promise((resolve) => setTimeout(() => resolve(log), 10));
 }
 
 // Snippet C — a long synchronous block AFTER the timer was registered
 export function snippetC() {
   const log = [];
-  setTimeout(() => log.push('timeout'), 0);
+  setTimeout(() => log.push("timeout"), 0);
   const stopAt = Date.now() + 50;
   while (Date.now() < stopAt) {
     /* the thread of execution is stuck right here */
   }
-  log.push('blocking loop done');
+  log.push("blocking loop done");
   return new Promise((resolve) => setTimeout(() => resolve(log), 60));
 }
 
 // Fill in what each snippet's log looks like once everything has settled.
 export const predictions = {
-  snippetA: TODO, // e.g. ['start', 'end', 'promise', 'timeout']
-  snippetB: TODO,
-  snippetC: TODO,
+  snippetA: ["start", "end", "promise", "timeout"], // e.g. ['start', 'end', 'promise', 'timeout']
+  snippetB: ["sync", "then 1", "then 2", "timeout"],
+  snippetC: ["blocking loop done", "timeout"],
 };
 
 /* -------------------------------------------------------------------------- */
@@ -62,7 +62,7 @@ export const predictions = {
 /* -------------------------------------------------------------------------- */
 
 export function delay(ms, callback) {
-  return TODO;
+  return setTimeout(callback, ms);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -78,7 +78,22 @@ export function delay(ms, callback) {
 /* -------------------------------------------------------------------------- */
 
 export function runInSeries(tasks, finalCallback) {
-  return TODO;
+  const results = [];
+  let index = 0;
+
+  function runNextTask() {
+    if (index >= tasks.length) {
+      finalCallback(results);
+      return;
+    }
+    tasks[index]((result) => {
+      results.push(result);
+      index++;
+      runNextTask();
+    });
+  }
+
+  runNextTask();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -90,5 +105,10 @@ export function runInSeries(tasks, finalCallback) {
 /* -------------------------------------------------------------------------- */
 
 export function debounce(fn, wait) {
-  return TODO;
+  let timeoutId;
+
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), wait);
+  };
 }
