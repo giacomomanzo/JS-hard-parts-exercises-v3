@@ -5,7 +5,7 @@
 // Rule for this module: no built-in array methods (`map`, `filter`, `reduce`,
 // `forEach`, `flat`, ...). You are here to build them, not to call them.
 
-export const TODO = Symbol('TODO — replace me');
+export const TODO = Symbol("TODO — replace me");
 
 /* -------------------------------------------------------------------------- */
 /* Exercise 1 — mapWith                                                        */
@@ -16,7 +16,13 @@ export const TODO = Symbol('TODO — replace me');
 /* -------------------------------------------------------------------------- */
 
 export function mapWith(array, instructions) {
-  return TODO;
+  const result = [];
+
+  for (const element of array) {
+    result.push(instructions(element));
+  }
+
+  return result;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -28,7 +34,13 @@ export function mapWith(array, instructions) {
 /* -------------------------------------------------------------------------- */
 
 export function reduceWith(array, howToCombine, startingValue) {
-  return TODO;
+  let accumulator = startingValue;
+
+  for (const element of array) {
+    accumulator = howToCombine(accumulator, element);
+  }
+
+  return accumulator;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -40,7 +52,17 @@ export function reduceWith(array, howToCombine, startingValue) {
 /* -------------------------------------------------------------------------- */
 
 export function filterWith(array, test) {
-  return TODO;
+  return reduceWith(
+    array,
+    (accumulator, element) => {
+      if (test(element)) {
+        accumulator.push(element);
+      }
+
+      return accumulator;
+    },
+    [],
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -53,7 +75,14 @@ export function filterWith(array, test) {
 /* -------------------------------------------------------------------------- */
 
 export function pipe(...fns) {
-  return TODO;
+  return function (input) {
+    let result = input;
+
+    for (const fn of fns) {
+      result = fn(result);
+    }
+    return result;
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -64,7 +93,9 @@ export function pipe(...fns) {
 /* -------------------------------------------------------------------------- */
 
 export function repeat(times, action) {
-  return TODO;
+  for (let i = 0; i < times; i++) {
+    action(i);
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -76,5 +107,19 @@ export function repeat(times, action) {
 /* -------------------------------------------------------------------------- */
 
 export function groupBy(array, keyOf) {
-  return TODO;
+  return reduceWith(
+    array,
+    (accumulator, element) => {
+      const key = keyOf(element);
+
+      if (!accumulator[key]) {
+        accumulator[key] = [];
+      }
+
+      accumulator[key].push(element);
+
+      return accumulator;
+    },
+    Object.create(null),
+  );
 }
