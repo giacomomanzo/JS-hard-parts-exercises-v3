@@ -1,7 +1,7 @@
 {
   "name": "js-hard-parts-exercises",
   "version": "1.0.0",
-  "description": "Esercizi di JavaScript sui temi del corso JavaScript: The Hard Parts (Frontend Masters)",
+  "description": "Original JavaScript exercises exploring execution contexts, closures, asynchronous programming, promises and prototypes",
   "type": "module",
   "private": true,
   "scripts": {

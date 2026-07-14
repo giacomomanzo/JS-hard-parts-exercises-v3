@@ -156,6 +156,9 @@ describe('exercise 5 — the lost `this`', () => {
     const timer = new Timer();
     timer.startBroken();
 
+    // What `this` becomes inside the callback is up to the host, so we don't
+    // assert on it. What matters is that it is not the timer: the count on the
+    // instance stays put.
     await sleep(10);
     expect(timer.count).toBe(0);
   });
